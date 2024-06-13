@@ -1,0 +1,53 @@
+@page "/";
+@using Member.Model
+@using Member.Service
+@using Newtonsoft.Json
+@using System.IdentityModel.Tokens.Jwt
+@inject NavigationManager NavManager;
+@inject IAppService AppService
+
+<h3>AppLaunch</h3>
+
+Loading...
+
+@code{
+    // 로컬 스토리지에서 사용자 세부 정보를 검색하여 사용자가 이미 로그인했는지 여부를 확인하는 일을 담당
+    protected async override Task OnInitializedAsync()
+    {
+        string userDetailsStr = await SecureStorage.GetAsync(nameof(Setting.UserBasicDetail));
+
+        if (!string.IsNullOrWhiteSpace(userDetailsStr))
+        {
+            // 사용자 세부 정보가 로컬 저장소에서 발견되면 구성 요소는 JSON 문자열을 객체로 역직렬화
+            var userBasicDetail = JsonConvert.DeserializeObject<UserBasicDetail>(userDetailsStr);
+
+            // 액세스 토큰을 디코딩하고 해당 속성을 확인하여 액세스 토큰이 만료되었는지 확인
+            var handler = new JwtSecurityTokenHandler();
+            var jsontoken = handler.ReadToken(userBasicDetail.AccessToken) as JwtSecurityToken;
+            Setting.UserBasicDetail = userBasicDetail;
+
+            if (jsontoken.ValidTo < DateTime.UtcNow)
+            {
+                bool isTokenRefreshed = await AppService.RefreshToken();
+
+                if (isTokenRefreshed)
+                {
+                    NavManager.NavigateTo("/dashboard");
+                }
+                else
+                {
+                    NavManager.NavigateTo("/login");
+                }
+
+            }
+            else
+            {
+                NavManager.NavigateTo("/dashboard");
+            }
+        }
+        else
+        {
+            NavManager.NavigateTo("/login");
+        }
+    }
+}
