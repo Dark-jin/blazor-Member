@@ -9,6 +9,6 @@ namespace Member.Model
     public class Setting
     {
         public static UserBasicDetail UserBasicDetail { get; set; }
-        public const string BaseUrl = "https://localhost:7277";
+        public const string BaseUrl = "http://localhost:5222";
     }
 }

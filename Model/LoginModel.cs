@@ -10,8 +10,8 @@ namespace Member.Model
     public class LoginModel
     {
         [Required]
-        public string UserName { get; set; }
+        public string email { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string password { get; set; }
     }
 }

@@ -18,9 +18,9 @@ namespace Member.Service
                 var url = $"{Setting.BaseUrl}{APIs.AuthenticateUser}";
                 var serializedStr = JsonConvert.SerializeObject(loginModel); // .NET 객체로부터 JSON 문자열을 만들기 위함
 
-                var response = await client.PatchAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
+                var response = await client.PostAsync(url, new StringContent(serializedStr, Encoding.UTF8, "application/json"));
 
-                if(response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
                     // ReadAsStringAsync() : HTTP 콘텐츠를 비동기 작업으로 문자열로 serialize합니다.(직렬화)
                     string contentStr = await response.Content.ReadAsStringAsync();  
