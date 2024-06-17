@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
+using Microsoft.Extensions.Logging;
 using Member.Data;
 using Member.Service;
 
@@ -19,9 +20,10 @@ public static class MauiProgram
 		builder.Services.AddMauiBlazorWebView();
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
 #endif
 
-		builder.Services.AddSingleton<IAppService, AppService>();
+        builder.Services.AddSingleton<IAppService, AppService>();
 
 		return builder.Build();
 	}
