@@ -53,7 +53,7 @@
             var handler = new JwtSecurityTokenHandler();
             var jsontoken = handler.ReadToken(tokenResponse.AccessToken) as JwtSecurityToken;
 
-            string userID = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.NameId).Value;
+            string userEmail = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.Email).Value;
             string name = jsontoken.Claims.FirstOrDefault(f => f.Type == JwtRegisteredClaimNames.Name).Value;
             string userAvatar = jsontoken.Claims.FirstOrDefault(f => f.Type == "UserAvatar").Value;
 
@@ -65,7 +65,7 @@
                 Name = name,
                 AccessToken = tokenResponse.AccessToken,
                 RefreshToken = tokenResponse.RefreshToken,
-                UserID = userID,
+                UserID = userEmail,
                 UserAvatar = !string.IsNullOrWhiteSpace(userAvatar) ? $"{Setting.BaseUrl}/{userAvatar}" : ""
             };
 

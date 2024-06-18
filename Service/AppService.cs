@@ -25,6 +25,13 @@ namespace Member.Service
                     // ReadAsStringAsync() : HTTP 콘텐츠를 비동기 작업으로 문자열로 serialize합니다.(직렬화)
                     string contentStr = await response.Content.ReadAsStringAsync();  
                     returnResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr); // JSON 문자열로부터 .NET 객체를 다시 복원하기 위함
+                    returnResponse.Content = contentStr;
+                    returnResponse.IsSuccess = true;
+                }
+                else
+                {
+                    returnResponse.ErrorMessage = "Authentication failed.";
+                    returnResponse.IsSuccess = false;
                 }
             }
             return returnResponse;

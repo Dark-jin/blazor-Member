@@ -10,15 +10,15 @@ namespace Member.Model
     public class RegistrationModel
     {
         [Required]
-        public string FirstName { get; set; }
+        public string firstName { get; set; }
         [Required]
-        public string LastName { get; set; }
+        public string lastName { get; set; }
         [Required]
-        public string Gender { get; set; }
+        public string gender { get; set; }
         [Required]
-        public string Email { get; set; }
+        public string email { get; set; }
         [Required]
-        public string Password { get; set; }
-        public string UserAvatar { get; set; }
+        public string password { get; set; }
+        public string userAvatar { get; set; }
     }
 }
