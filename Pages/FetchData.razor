@@ -1,4 +1,4 @@
-@page "/featchdata"
+@page "/fetchdata"
 
 @using Member.Model
 @using Member.Service
@@ -6,7 +6,7 @@
 @inject IAppService  AppService;
 
 
-@if (Students == null)
+@if (Student == null)
 {
 	<p><em>Loading...</em></p>
 }
@@ -18,27 +18,28 @@ else
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Email</th>
+				<th>AccessToken</th>
+				<th>RefreshToken</th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var student in Students)
-			{
-				<tr>
-					<td>@student.FirstName</td>
-					<td>@student.LastName</td>
-					<td>@student.Email</td>
-				</tr>
-			}
+			<tr>
+				<td>@Student.firstName</td>
+				<td>@Student.lastName</td>
+				<td>@Student.email</td>
+				<td>@Setting.UserBasicDetail.AccessToken</td>
+				<td>@Setting.UserBasicDetail.RefreshToken</td>
+			</tr>
 		</tbody>
 	</table>
 }
 
 @code 
 {
-	private List<StudentModel> Students;
+	private StudentModel Student;
 
 	protected override async Task OnInitializedAsync()
 	{
-		Students = await AppService.GetAllStudents();
+		Student = await AppService.UserProfile();
 	}
 }

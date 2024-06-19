@@ -15,7 +15,7 @@ namespace Member.Service
         public Task<MainResponse> AuthenticateUser(LoginModel loginModel);
         // 객체를 가져와 사용자 등록 성공 여부를 나타내는 bool 값과 해당하는 경우 오류 메시지가 포함된 튜플을 반환하는 메서드
         Task<(bool IsSuccess, string ErrorMessage)> RegisterUser(RegistrationModel registerUser);
-        // 모든 학생에 대한 정보가 포함된 개체 목록을 반환하는 메서드
-        Task<List<StudentModel>> GetAllStudents();
+        // 사용자에 대한 정보가 포함된 개체 목록을 반환하는 메서드
+        Task<StudentModel> UserProfile();
     }
 }

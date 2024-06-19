@@ -1,4 +1,5 @@
 ﻿using Member.Model;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -37,20 +38,27 @@ namespace Member.Service
             return returnResponse;
         }
 
-        public async Task<List<StudentModel>> GetAllStudents()
+        public async Task<StudentModel> UserProfile()
         {
-            var returnResponse = new List<StudentModel>();
+            var returnResponse = new StudentModel();
             using (var client = new HttpClient())
             {
-                var url = $"{Setting.BaseUrl}{APIs.GetAllStudents}";
+                var url = $"{Setting.BaseUrl}{APIs.UserProfile}";
+                var queryParameter = new Dictionary<string, string>
+                {
+                    { "email", Setting.UserBasicDetail.Email }
+                };
 
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
-                var response = await client.GetAsync(url);
+                var requestUri = new Uri(QueryHelpers.AddQueryString(url, queryParameter));
+
+                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
+                //var response = await client.GetAsync(url);
+                var response = await client.GetAsync(requestUri);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     bool isTokenRefreshed = await RefreshToken();
-                    if (isTokenRefreshed) return await GetAllStudents();
+                    if (isTokenRefreshed) return await UserProfile();
                 }
                 else
                 {
@@ -58,9 +66,18 @@ namespace Member.Service
                     {
                         string contentStr = await response.Content.ReadAsStringAsync();
                         var mainResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr);
+                        if (response.IsSuccessStatusCode == false)
+                        {
+                            mainResponse.ErrorMessage = await response.Content.ReadAsStringAsync();
+                        }
+                        else
+                        {
+                            mainResponse.IsSuccess = true;
+                            mainResponse.Content = contentStr;
+                        }
                         if (mainResponse.IsSuccess)
                         {
-                            returnResponse = JsonConvert.DeserializeObject<List<StudentModel>>(mainResponse.Content.ToString());
+                            returnResponse = JsonConvert.DeserializeObject<StudentModel>(mainResponse.Content.ToString());
                         }
                     }
                 }

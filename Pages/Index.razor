@@ -1,10 +1,25 @@
 @page "/dashboard"
 @using Member.Model
+@inject NavigationManager NavManager;
 
 <h1>Hello World!</h1>
 
 Welcome to your new app.
 
+<div>
 <img src="@Setting.UserBasicDetail.UserAvatar" height="50" width="50" class="rounded-circle" />
+</div>
+<div>@Setting.UserBasicDetail.Name</div>
+<div>
+<button class="btn btn-primary" type="submit" @onclick="profilebtn">
+    ÇÁ·ÎÇÊ
+</button>
+</div>
 
-@Setting.UserBasicDetail.Name;
+@code
+{
+    void profilebtn()
+    {
+        NavManager.NavigateTo("/fetchdata");
+    }
+}

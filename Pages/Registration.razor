@@ -5,7 +5,7 @@
 
 <h3>Registration</h3>
 
-<EditForm Model="@registrationModel" OnInvalidSubmit="Submit">
+<EditForm Model="@registrationModel" OnValidSubmit="Submit">
     <DataAnnotationsValidator/>
     <div class="mb-2">
         <img src="@_userAvatar" @onclick="DisplayAction" height="50" width="50" class="rounded-circle" />

@@ -11,6 +11,6 @@ namespace Member.Model
         public const string AuthenticateUser = "/api/Login";
         public const string RegisterUser = "/api/Registration";
         public const string RefreshToken = "/api/Login/refresh";
-        public const string GetAllStudents = "/api/Students/GetAllStudent";
+        public const string UserProfile = "/api/Login";
     }
 }
