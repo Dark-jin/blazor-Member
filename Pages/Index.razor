@@ -1,6 +1,11 @@
 @page "/dashboard"
 @using Member.Model
+@using System.IdentityModel.Tokens.Jwt
+@using Member.Service
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
 @inject NavigationManager NavManager;
+@inject IAppService AppService;
 
 <h1>Hello World!</h1>
 
@@ -10,16 +15,48 @@ Welcome to your new app.
 <img src="@Setting.UserBasicDetail.UserAvatar" height="50" width="50" class="rounded-circle" />
 </div>
 <div>@Setting.UserBasicDetail.Name</div>
-<div>
+<div class="gap-2">
 <button class="btn btn-primary" type="submit" @onclick="profilebtn">
     프로필
+</button>
+<button class="btn btn-primary" type="submit" @onclick="logout">
+    로그아웃
 </button>
 </div>
 
 @code
 {
+    private UserBasicDetail userBasicDetail;
+    AuthenticateRequestAndResponse authenticate = new();
+
+
     void profilebtn()
     {
         NavManager.NavigateTo("/fetchdata");
+    }
+    private async void logout()
+    {
+        var response = await AppService.UserLogout(authenticate);
+
+        if(userBasicDetail == null)
+        {
+            NavManager.NavigateTo("/");
+        }
+
+        // // 기존 데이터 읽기
+        // var jsonString = SecureStorage.GetAsync(nameof(userBasicDetail)).Result;
+
+        // // JSON 데이터를 JObject로 파싱
+        // var jsonObject = JObject.Parse(jsonString);
+
+        // // 일부 항목 제거 (예: "keyToRemove"라는 키를 가진 항목 제거)
+        // jsonObject.Remove("AccessToken");
+        // jsonObject.Remove("RefreshToken");
+
+        // // 수정된 데이터를 다시 JSON 문자열로 변환
+        // var updatedJsonString = jsonObject.ToString();
+
+        // // 수정된 데이터를 다시 SecureStorage에 저장
+        // SecureStorage.SetAsync(nameof(userBasicDetail), updatedJsonString).Wait();
     }
 }

@@ -12,5 +12,6 @@ namespace Member.Model
         public const string RegisterUser = "/api/Registration";
         public const string RefreshToken = "/api/Login/refresh";
         public const string UserProfile = "/api/Login";
+        public const string UserLogout = "/api/Login/logout";
     }
 }

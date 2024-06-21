@@ -23,8 +23,9 @@ namespace Member.Service
 
                 if (response.IsSuccessStatusCode)
                 {
+                    var test = await response.Content.ReadAsStreamAsync();
                     // ReadAsStringAsync() : HTTP 콘텐츠를 비동기 작업으로 문자열로 serialize합니다.(직렬화)
-                    string contentStr = await response.Content.ReadAsStringAsync();  
+                    string contentStr = await response.Content.ReadAsStringAsync();
                     returnResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr); // JSON 문자열로부터 .NET 객체를 다시 복원하기 위함
                     returnResponse.Content = contentStr;
                     returnResponse.IsSuccess = true;
@@ -51,8 +52,6 @@ namespace Member.Service
 
                 var requestUri = new Uri(QueryHelpers.AddQueryString(url, queryParameter));
 
-                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
-                //var response = await client.GetAsync(url);
                 var response = await client.GetAsync(requestUri);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -148,6 +147,38 @@ namespace Member.Service
             }
 
             return (isSuccess, errorMessage);
+        }
+        public async Task<MainResponse> UserLogout(AuthenticateRequestAndResponse authenticate)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = $"{Setting.BaseUrl}{APIs.UserLogout}";
+
+                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authenticate.AccessToken}");
+
+                var queryParameter = new Dictionary<string, string>
+                {
+                    { "refreshtoken", authenticate.RefreshToken }
+                };
+
+                var jsonContent = new StringContent(JsonConvert.SerializeObject(queryParameter), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(url, jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var mainResponse = JsonConvert.DeserializeObject<MainResponse>(responseContent);
+                    SecureStorage.RemoveAll();
+                    return mainResponse;
+                }
+                else
+                {
+                    // 에러 응답 처리
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Logout erro : {errorContent}");
+                }
+            }
         }
     }
 }
