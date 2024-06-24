@@ -23,7 +23,6 @@ namespace Member.Service
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var test = await response.Content.ReadAsStreamAsync();
                     // ReadAsStringAsync() : HTTP 콘텐츠를 비동기 작업으로 문자열로 serialize합니다.(직렬화)
                     string contentStr = await response.Content.ReadAsStringAsync();
                     returnResponse = JsonConvert.DeserializeObject<MainResponse>(contentStr); // JSON 문자열로부터 .NET 객체를 다시 복원하기 위함
@@ -148,22 +147,21 @@ namespace Member.Service
 
             return (isSuccess, errorMessage);
         }
-        public async Task<MainResponse> UserLogout(AuthenticateRequestAndResponse authenticate)
+        public async Task<MainResponse> UserLogout(UserBasicDetail userBasicDetail)
         {
             using (var client = new HttpClient())
             {
                 var url = $"{Setting.BaseUrl}{APIs.UserLogout}";
 
-                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authenticate.AccessToken}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
 
                 var queryParameter = new Dictionary<string, string>
                 {
-                    { "refreshtoken", authenticate.RefreshToken }
+                    { "refresh", Setting.UserBasicDetail.RefreshToken }
                 };
-
+                var requestUri = new Uri(QueryHelpers.AddQueryString(url, queryParameter));
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(queryParameter), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(url, jsonContent);
+                var response = await client.PostAsync(requestUri, jsonContent);
 
                 if (response.IsSuccessStatusCode)
                 {

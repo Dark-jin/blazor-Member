@@ -18,6 +18,6 @@ namespace Member.Service
         // 사용자에 대한 정보가 포함된 개체 목록을 반환하는 메서드
         Task<StudentModel> UserProfile();
         // 유저 로그아웃 메서드
-        Task <MainResponse> UserLogout(AuthenticateRequestAndResponse authenticate);
+        Task <MainResponse> UserLogout(UserBasicDetail userBasicDetail);
     }
 }

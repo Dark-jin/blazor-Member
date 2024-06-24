@@ -40,6 +40,7 @@
 @code
 {
     LoginModel loginModel = new();
+    RegistrationModel registrationModel = new();
     private string _spinnerClass = "";
 
     private async void Submit()
@@ -55,9 +56,9 @@
 
             string userEmail = jsontoken.Claims.FirstOrDefault(f => f.Type == "email").Value;
             string name = jsontoken.Claims.FirstOrDefault(f => f.Type == "name").Value;
-            string userAvatar = jsontoken.Claims.FirstOrDefault(f => f.Type == "userAvatar").Value;
 
             string email = loginModel.email;
+            string avatar = registrationModel.userAvatar;
 
             var userBasicDetail = new UserBasicDetail
             {
@@ -66,7 +67,7 @@
                 AccessToken = tokenResponse.AccessToken,
                 RefreshToken = tokenResponse.RefreshToken,
                 UserID = userEmail,
-                UserAvatar = !string.IsNullOrWhiteSpace(userAvatar) ? $"{Setting.BaseUrl}/{userAvatar}" : ""
+                    UserAvatar = avatar
             };
 
             string userBasicInfoStr = JsonConvert.SerializeObject(userBasicDetail);

@@ -26,8 +26,8 @@ Welcome to your new app.
 
 @code
 {
-    private UserBasicDetail userBasicDetail;
-    AuthenticateRequestAndResponse authenticate = new();
+    private UserBasicDetail userBasic;
+    UserBasicDetail userBasicDetail = new();
 
 
     void profilebtn()
@@ -36,9 +36,9 @@ Welcome to your new app.
     }
     private async void logout()
     {
-        var response = await AppService.UserLogout(authenticate);
+        var response = await AppService.UserLogout(userBasicDetail);
 
-        if(userBasicDetail == null)
+        if (userBasic == null)
         {
             NavManager.NavigateTo("/");
         }
