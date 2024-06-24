@@ -27,7 +27,6 @@ Welcome to your new app.
 @code
 {
     private UserBasicDetail userBasic;
-    UserBasicDetail userBasicDetail = new();
 
 
     void profilebtn()
@@ -36,7 +35,7 @@ Welcome to your new app.
     }
     private async void logout()
     {
-        var response = await AppService.UserLogout(userBasicDetail);
+        var response = await AppService.UserLogout();
 
         if (userBasic == null)
         {

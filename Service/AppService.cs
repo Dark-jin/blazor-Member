@@ -44,14 +44,9 @@ namespace Member.Service
             using (var client = new HttpClient())
             {
                 var url = $"{Setting.BaseUrl}{APIs.UserProfile}";
-                var queryParameter = new Dictionary<string, string>
-                {
-                    { "email", Setting.UserBasicDetail.Email }
-                };
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
 
-                var requestUri = new Uri(QueryHelpers.AddQueryString(url, queryParameter));
-
-                var response = await client.GetAsync(requestUri);
+                var response = await client.GetAsync(url);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -147,12 +142,13 @@ namespace Member.Service
 
             return (isSuccess, errorMessage);
         }
-        public async Task<MainResponse> UserLogout(UserBasicDetail userBasicDetail)
+        public async Task<MainResponse> UserLogout()
         {
             using (var client = new HttpClient())
             {
                 var url = $"{Setting.BaseUrl}{APIs.UserLogout}";
 
+                // Authorize
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Setting.UserBasicDetail?.AccessToken}");
 
                 var queryParameter = new Dictionary<string, string>
@@ -163,6 +159,7 @@ namespace Member.Service
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(queryParameter), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(requestUri, jsonContent);
 
+                // SecueStorage에 저장되어있는 토큰 모두 삭제
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
